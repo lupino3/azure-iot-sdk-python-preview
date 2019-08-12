@@ -13,8 +13,7 @@ def create_custom_config():
     # The openssl config file extension could be "cfg" or "cnf"
 
     config_path = os.getenv("OPENSSL_CONF")
-    print(config_path)
-    # config_path = str(config_path)
+    config_path = str(config_path)
     with open(config_path, "r") as openssl_config:
         config = openssl_config.read()
     lines = config.splitlines()
@@ -85,7 +84,7 @@ def create_verification_cert(nonce, root_verify):
         )
 
     else:
-        os.system("openssl genrsa -out demoCA/private/verification_key.pem" + " " + str(key_size))
+        os.system("openssl genrsa -out demoCA/private/verification_root_key.pem" + " " + str(key_size))
         os.system(
             "openssl req -key demoCA/private/verification_root_key.pem"
             + " "
