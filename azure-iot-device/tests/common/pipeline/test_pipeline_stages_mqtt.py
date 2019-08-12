@@ -100,9 +100,10 @@ def stage(mocker):
 
 @pytest.fixture
 def transport(mocker):
-    return mocker.patch(
+    mocker.patch(
         "azure.iot.device.common.pipeline.pipeline_stages_mqtt.MQTTTransport", autospec=True
     )
+    return pipeline_stages_mqtt.MQTTTransport
 
 
 @pytest.fixture
