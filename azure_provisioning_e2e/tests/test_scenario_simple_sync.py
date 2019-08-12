@@ -150,6 +150,7 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
 
     with open("device_cert.pem", "w") as out_device_cert:
         device_cert_content = os.getenv("PROVISIONING_DEVICE_CERT_1")
+        print(device_cert_content)
         # device_cert_content = "all file write"
         out_device_cert.writelines(device_cert_content)
 
