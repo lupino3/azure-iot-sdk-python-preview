@@ -48,91 +48,91 @@ def before_test(request):
     request.addfinalizer(after_test)
 
 
-@pytest.mark.it(
-    "A device gets provisioned to the linked IoTHub with the device_id equal to the registration_id when a symmetric key individual enrollment has been created"
-)
-def test_device_register_with_no_device_id_for_a_symmetric_key_individual_enrollment(
-    before_module, before_test
-):
-    service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
-
-    registration_id = "e2e-dps-underthewhompingwillow"
-    reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
-    attestation_mechanism = AttestationMechanism(type="symmetricKey")
-
-    individual_provisioning_model = IndividualEnrollment.create(
-        attestation=attestation_mechanism,
-        registration_id=registration_id,
-        reprovision_policy=reprovision_policy,
-    )
-
-    individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
-
-    time.sleep(3)
-
-    registration_id = individual_enrollment_record.registration_id
-    symmetric_key = individual_enrollment_record.attestation.symmetric_key.primary_key
-
-    provisioning_device_client = ProvisioningDeviceClient.create_from_symmetric_key(
-        provisioning_host=PROVISIONING_HOST,
-        registration_id=registration_id,
-        id_scope=ID_SCOPE,
-        symmetric_key=symmetric_key,
-    )
-
-    provisioning_device_client.register()
-
-    helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
-    device = helper.get_device(registration_id)
-
-    assert device is not None
-    assert device.authentication.type == "sas"
-    assert device.device_id == registration_id
-
-    service_client.delete_individual_enrollment_by_param(registration_id)
-
-@pytest.mark.it(
-    "A device gets provisioned to the linked IoTHub with the user supplied device_id when a symmetric key individual enrollment has been created"
-)
-def test_device_register_with_device_id_for_a_symmetric_key_individual_enrollment(before_test):
-
-    registration_id = "e2e-dps-prioriincantatem"
-    device_id = "e2e-dps-tommarvoloriddle"
-    reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
-    attestation_mechanism = AttestationMechanism(type="symmetricKey")
-
-    individual_provisioning_model = IndividualEnrollment.create(
-        attestation=attestation_mechanism,
-        registration_id=registration_id,
-        device_id=device_id,
-        reprovision_policy=reprovision_policy,
-    )
-
-    service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
-    individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
-
-    time.sleep(3)
-
-    registration_id = individual_enrollment_record.registration_id
-    symmetric_key = individual_enrollment_record.attestation.symmetric_key.primary_key
-
-    provisioning_device_client = ProvisioningDeviceClient.create_from_symmetric_key(
-        provisioning_host=PROVISIONING_HOST,
-        registration_id=registration_id,
-        id_scope=ID_SCOPE,
-        symmetric_key=symmetric_key,
-    )
-
-    provisioning_device_client.register()
-
-    helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
-    device = helper.get_device(device_id)
-
-    assert device is not None
-    assert device.authentication.type == "sas"
-    assert device.device_id == device_id
-
-    service_client.delete_individual_enrollment_by_param(registration_id)
+# @pytest.mark.it(
+#     "A device gets provisioned to the linked IoTHub with the device_id equal to the registration_id when a symmetric key individual enrollment has been created"
+# )
+# def test_device_register_with_no_device_id_for_a_symmetric_key_individual_enrollment(
+#     before_module, before_test
+# ):
+#     service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
+#
+#     registration_id = "e2e-dps-underthewhompingwillow"
+#     reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
+#     attestation_mechanism = AttestationMechanism(type="symmetricKey")
+#
+#     individual_provisioning_model = IndividualEnrollment.create(
+#         attestation=attestation_mechanism,
+#         registration_id=registration_id,
+#         reprovision_policy=reprovision_policy,
+#     )
+#
+#     individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
+#
+#     time.sleep(3)
+#
+#     registration_id = individual_enrollment_record.registration_id
+#     symmetric_key = individual_enrollment_record.attestation.symmetric_key.primary_key
+#
+#     provisioning_device_client = ProvisioningDeviceClient.create_from_symmetric_key(
+#         provisioning_host=PROVISIONING_HOST,
+#         registration_id=registration_id,
+#         id_scope=ID_SCOPE,
+#         symmetric_key=symmetric_key,
+#     )
+#
+#     provisioning_device_client.register()
+#
+#     helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
+#     device = helper.get_device(registration_id)
+#
+#     assert device is not None
+#     assert device.authentication.type == "sas"
+#     assert device.device_id == registration_id
+#
+#     service_client.delete_individual_enrollment_by_param(registration_id)
+#
+# @pytest.mark.it(
+#     "A device gets provisioned to the linked IoTHub with the user supplied device_id when a symmetric key individual enrollment has been created"
+# )
+# def test_device_register_with_device_id_for_a_symmetric_key_individual_enrollment(before_test):
+#
+#     registration_id = "e2e-dps-prioriincantatem"
+#     device_id = "e2e-dps-tommarvoloriddle"
+#     reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
+#     attestation_mechanism = AttestationMechanism(type="symmetricKey")
+#
+#     individual_provisioning_model = IndividualEnrollment.create(
+#         attestation=attestation_mechanism,
+#         registration_id=registration_id,
+#         device_id=device_id,
+#         reprovision_policy=reprovision_policy,
+#     )
+#
+#     service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
+#     individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
+#
+#     time.sleep(3)
+#
+#     registration_id = individual_enrollment_record.registration_id
+#     symmetric_key = individual_enrollment_record.attestation.symmetric_key.primary_key
+#
+#     provisioning_device_client = ProvisioningDeviceClient.create_from_symmetric_key(
+#         provisioning_host=PROVISIONING_HOST,
+#         registration_id=registration_id,
+#         id_scope=ID_SCOPE,
+#         symmetric_key=symmetric_key,
+#     )
+#
+#     provisioning_device_client.register()
+#
+#     helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
+#     device = helper.get_device(device_id)
+#
+#     assert device is not None
+#     assert device.authentication.type == "sas"
+#     assert device.device_id == device_id
+#
+#     service_client.delete_individual_enrollment_by_param(registration_id)
 
 
 @pytest.mark.it(
@@ -140,8 +140,8 @@ def test_device_register_with_device_id_for_a_symmetric_key_individual_enrollmen
 )
 def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_test):
 
-    # registration_id = "devicepriori"  # the certificate common name
-    registration_id = os.getenv("PROVISIONING_DEVICE_COMMON_NAME_1")
+    registration_id = "devicepriori1"  # the certificate common name
+    # registration_id = os.getenv("PROVISIONING_DEVICE_COMMON_NAME_1")
     device_id = "e2e-dps-flying-feather"
     reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
 
@@ -149,11 +149,13 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
     #     device_cert_content = device_pem.read()
 
     with open("device_cert.pem", "w") as out_device_cert:
-        device_cert_content = os.getenv("PROVISIONING_DEVICE_CERT_1")
+        # device_cert_content = os.getenv("PROVISIONING_DEVICE_CERT_1")
+        device_cert_content = "all file write"
         out_device_cert.writelines(device_cert_content)
 
     with open("device_key.pem", "w") as out_device_key:
-        device_key_content = os.getenv("PROVISIONING_DEVICE_KEY_1")
+        # device_key_content = os.getenv("PROVISIONING_DEVICE_KEY_1")
+        device_key_content = "all key write"
         out_device_key.writelines(device_key_content)
 
     attestation_mechanism = AttestationMechanism.create_with_x509_client_certs(device_cert_content)
