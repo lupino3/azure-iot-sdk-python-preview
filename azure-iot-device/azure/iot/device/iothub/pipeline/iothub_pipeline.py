@@ -118,9 +118,9 @@ class IoTHubPipeline(object):
         """
         logger.info("Starting ConnectOperation on the pipeline")
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -134,9 +134,9 @@ class IoTHubPipeline(object):
         """
         logger.info("Starting DisconnectOperation on the pipeline")
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -150,9 +150,9 @@ class IoTHubPipeline(object):
         :param callback: callback which is called when the message publish has been acknowledged by the service.
         """
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -168,9 +168,9 @@ class IoTHubPipeline(object):
         :param callback: callback which is called when the message publish has been acknowledged by the service.
         """
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -187,9 +187,9 @@ class IoTHubPipeline(object):
         """
         logger.info("IoTHubPipeline send_method_response called")
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -207,9 +207,9 @@ class IoTHubPipeline(object):
         This callback should have one parameter, which will contain the requested twin when called.
         """
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror, twin=None)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror, twin=None)
             else:
                 callback(twin=call.twin)
 
@@ -223,9 +223,9 @@ class IoTHubPipeline(object):
         :param callback: callback which is called when request has been acknowledged by the service.
         """
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -249,9 +249,9 @@ class IoTHubPipeline(object):
             raise ValueError("Invalid feature_name")
         self.feature_enabled[feature_name] = True
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.errror)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.errror)
             else:
                 callback()
 
@@ -275,9 +275,9 @@ class IoTHubPipeline(object):
             raise ValueError("Invalid feature_name")
         self.feature_enabled[feature_name] = False
 
-        def on_complete(call):
-            if call.error:
-                callback(error=call.error)
+        def on_complete(op):
+            if op.error:
+                callback(error=op.error)
             else:
                 callback()
 

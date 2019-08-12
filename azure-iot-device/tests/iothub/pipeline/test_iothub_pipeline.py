@@ -24,7 +24,6 @@ from azure.iot.device.iothub.auth import (
     SymmetricKeyAuthenticationProvider,
     X509AuthenticationProvider,
 )
-from azure.iot.device.common import mqtt_transport
 
 logging.basicConfig(level=logging.INFO)
 
@@ -54,15 +53,12 @@ def pipeline(mocker, auth_provider):
 def twin_patch():
     return {"key": "value"}
 
-
+# automatically mock the transport for all tests in this file
+# TODO: this needs to be fixed to match teh other mock_transport fixture
 @pytest.fixture(autouse=True)
 def mock_transport(mocker):
     mocker.patch.object(mqtt_transport, "MQTTTransport", autospec=True)
 
-
-@pytest.fixture
-def cb(mocker):
-    return mocker.MagicMock()
 
 
 @pytest.mark.describe("IoTHubPipeline - Instantiation")
@@ -209,6 +205,7 @@ class TestIoTHubPipelineConnect(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the ConnectOperation")
     def _test_op_fail(self, mocker, pipeline):
+        assert False
         # TODO
         pipeline.connect()
         op = pipeline._pipeline.run_op.call_args[0][0]
@@ -220,8 +217,6 @@ class TestIoTHubPipelineConnect(object):
     @pytest.mark.it(
         "Does not trigger callback upon unsuccessful completion of the ConnectOperation"
     )
-    def _test_todo(self):
-        pass
 
 
 @pytest.mark.describe("IoTHubPipeline - .disconnect()")

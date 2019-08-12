@@ -22,6 +22,7 @@ import azure.iot.device.iothub.sync_clients as sync_clients
 logging.basicConfig(level=logging.INFO)
 
 
+# Automatically mock TODO
 @pytest.fixture(autouse=True)
 def mock_transport(mocker):
     mocker.patch("azure.iot.device.common.mqtt_transport.MQTTTransport", autospec=True)

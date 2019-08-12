@@ -29,6 +29,7 @@ async def create_completed_future(result=None):
     return f
 
 
+# automatically mock the transport for all tests in this file.
 @pytest.fixture(autouse=True)
 def mock_transport(mocker):
     mocker.patch("azure.iot.device.common.mqtt_transport.MQTTTransport", autospec=True)

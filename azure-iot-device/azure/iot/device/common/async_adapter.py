@@ -8,7 +8,6 @@
 import functools
 import logging
 import six
-import traceback
 import azure.iot.device.common.asyncio_compat as asyncio_compat
 
 logger = logging.getLogger(__name__)
