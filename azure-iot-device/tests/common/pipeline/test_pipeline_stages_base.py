@@ -193,7 +193,9 @@ ops_that_cause_connection = [
     ops_that_cause_connection,
     ids=[x["op_class"].__name__ for x in ops_that_cause_connection],
 )
-@pytest.mark.describe("EnsureConnectionStage - .run_op() -- called with connect operation")
+@pytest.mark.describe(
+    "EnsureConnectionStage - .run_op() -- called with operation that causes a connection to be established"
+)
 class TestEnsureConnectionStageRunOp(object):
     @pytest.fixture
     def op(self, mocker, params):
@@ -230,7 +232,7 @@ class TestEnsureConnectionStageRunOp(object):
         assert isinstance(stage.next.run_op.call_args[0][0], pipeline_ops_base.ConnectOperation)
 
     @pytest.mark.it(
-        "Calls the op's callback with the error from the ConnectOperation is that operation fails"
+        "Calls the op's callback with the error from the ConnectOperation if that operation fails"
     )
     def test_connect_failure(self, params, op, stage, fake_exception):
         stage.pipeline_root.connected = False
@@ -292,7 +294,7 @@ pipeline_stage_test.add_base_pipeline_stage_tests(
     extra_initializer_defaults={"blocked": False, "queue": queue.Queue},
 )
 
-connect_ops = [
+connection_ops = [
     {"op_class": pipeline_ops_base.ConnectOperation, "connected_flag_required_to_run": False},
     {"op_class": pipeline_ops_base.DisconnectOperation, "connected_flag_required_to_run": True},
     {"op_class": pipeline_ops_base.ReconnectOperation, "connected_flag_required_to_run": True},
@@ -303,7 +305,9 @@ class FakeOperation(pipeline_ops_base.PipelineOperation):
     pass
 
 
-@pytest.mark.describe("SerializeConnectOpsStage - .run_op() -- called with connect operation")
+@pytest.mark.describe(
+    "SerializeConnectOpsStage - .run_op() -- called with an operation that connects, disconnects, or reconnects"
+)
 class TestSerializeConnectOpStageRunOp(object):
     @pytest.fixture
     def stage(self, mocker):
@@ -314,7 +318,7 @@ class TestSerializeConnectOpStageRunOp(object):
         return stage
 
     @pytest.fixture
-    def connect_op(self, mocker, params):
+    def connection_op(self, mocker, params):
         return params["op_class"](callback=mocker.MagicMock())
 
     @pytest.fixture
@@ -348,7 +352,7 @@ class TestSerializeConnectOpStageRunOp(object):
         assert_callback_succeeded(op=op)
 
     @pytest.mark.it(
-        "Immediately passes the operation down if an operation is not alrady being serialized"
+        "Immediately passes the operation down if an operation is not alrady being blocking the stage"
     )
     def test_passes_op_when_not_blocked(self, stage, mocker, fake_op):
         stage.run_op(fake_op)
@@ -356,72 +360,76 @@ class TestSerializeConnectOpStageRunOp(object):
         assert stage.next.run_op.call_args[0][0] == fake_op
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
     @pytest.mark.it(
-        "Does not pass the operation down if a different operation is currently being serialized"
+        "Does not immediately pass the operation down if a different operation is currently blcking the stage"
     )
-    def test_does_not_pass_op_if_blocked(self, params, stage, connect_op, fake_op):
+    def test_does_not_pass_op_if_blocked(self, params, stage, connection_op, fake_op):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         stage.run_op(fake_op)
 
         assert stage.next.run_op.call_count == 1
-        assert stage.next.run_op.call_args[0][0] == connect_op
+        assert stage.next.run_op.call_args[0][0] == connection_op
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
     @pytest.mark.it(
-        "Waits for the currently serialized operation to complete before passing the op down"
+        "Waits for the operation that is currently blocking the stage to complete before passing the op down"
     )
     def test_waits_for_serialized_op_to_complete_before_passing_blocked_op(
-        self, params, stage, connect_op, fake_op
+        self, params, stage, connection_op, fake_op
     ):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         stage.run_op(fake_op)
-        operation_flow.complete_op(stage=stage.next, op=connect_op)
+        operation_flow.complete_op(stage=stage.next, op=connection_op)
 
         assert stage.next.run_op.call_count == 2
         assert stage.next.run_op.call_args[0][0] == fake_op
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
-    @pytest.mark.it("Fails the operation if currently serialized option fails")
+    @pytest.mark.it("Fails the operation if the operation that previously blocked the stage fails")
     def test_fails_blocked_op_if_serialized_op_fails(
-        self, params, stage, connect_op, fake_op, fake_exception
+        self, params, stage, connection_op, fake_op, fake_exception
     ):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         stage.run_op(fake_op)
-        connect_op.error = fake_exception
-        operation_flow.complete_op(stage=stage.next, op=connect_op)
+        connection_op.error = fake_exception
+        operation_flow.complete_op(stage=stage.next, op=connection_op)
         assert_callback_failed(op=fake_op, error=fake_exception)
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
-    @pytest.mark.it("Can pend multiple operations while waiting for a serialized operation")
-    def test_blocks_multiple_ops(self, params, stage, connect_op, fake_ops):
+    @pytest.mark.it(
+        "Can pend multiple operations while waiting for an operation that is currently blocking the stage"
+    )
+    def test_blocks_multiple_ops(self, params, stage, connection_op, fake_ops):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         for op in fake_ops:
             stage.run_op(op)
         assert stage.next.run_op.call_count == 1
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
-    @pytest.mark.it("Passes down all pending operations after the serialized operation completes")
-    def test_unblocks_multiple_ops(self, params, stage, connect_op, fake_ops):
+    @pytest.mark.it(
+        "Passes down all pending operations after the operation that previously blocked the stage completes successfully"
+    )
+    def test_unblocks_multiple_ops(self, params, stage, connection_op, fake_ops):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         for op in fake_ops:
             stage.run_op(op)
 
-        operation_flow.complete_op(stage=stage.next, op=connect_op)
+        operation_flow.complete_op(stage=stage.next, op=connection_op)
 
         assert stage.next.run_op.call_count == 1 + len(fake_ops)
 
@@ -433,23 +441,25 @@ class TestSerializeConnectOpStageRunOp(object):
             assert op == call_args[0][0]
 
     @pytest.mark.parametrize(
-        "params", connect_ops, ids=[x["op_class"].__name__ for x in connect_ops]
+        "params", connection_ops, ids=[x["op_class"].__name__ for x in connection_ops]
     )
-    @pytest.mark.it("Fails all pending operations after the seriazed operation fails")
-    def test_fails_multiple_ops(self, params, stage, connect_op, fake_ops, fake_exception):
+    @pytest.mark.it(
+        "Fails all pending operations after the operation that previously blocked the stage fails"
+    )
+    def test_fails_multiple_ops(self, params, stage, connection_op, fake_ops, fake_exception):
         stage.pipeline_root.connected = params["connected_flag_required_to_run"]
-        stage.run_op(connect_op)
+        stage.run_op(connection_op)
         for op in fake_ops:
             stage.run_op(op)
 
-        connect_op.error = fake_exception
-        operation_flow.complete_op(stage=stage.next, op=connect_op)
+        connection_op.error = fake_exception
+        operation_flow.complete_op(stage=stage.next, op=connection_op)
 
         for op in fake_ops:
             assert_callback_failed(op=op, error=fake_exception)
 
     @pytest.mark.it(
-        "Does not pass down operations in the queue if an operation in the queue gets serialized"
+        "Does not immediately pass down operations in the queue if an operation in the queue causes the stage to re-block"
     )
     def test_re_blocks_ops_from_queue(self, stage, mocker):
         first_connect = pipeline_ops_base.ConnectOperation(callback=mocker.MagicMock())
@@ -486,27 +496,27 @@ class TestSerializeConnectOpStageRunOp(object):
             pytest.param(
                 {
                     "pre_connected_flag": True,
-                    "first_connect_op": pipeline_ops_base.DisconnectOperation,
+                    "first_connection_op": pipeline_ops_base.DisconnectOperation,
                     "mid_connect_flag": False,
-                    "second_connect_op": pipeline_ops_base.DisconnectOperation,
+                    "second_connection_op": pipeline_ops_base.DisconnectOperation,
                 },
                 id="Disconnect followed by Disconnect",
             ),
             pytest.param(
                 {
                     "pre_connected_flag": False,
-                    "first_connect_op": pipeline_ops_base.ConnectOperation,
+                    "first_connection_op": pipeline_ops_base.ConnectOperation,
                     "mid_connect_flag": True,
-                    "second_connect_op": pipeline_ops_base.ConnectOperation,
+                    "second_connection_op": pipeline_ops_base.ConnectOperation,
                 },
                 id="Connect followed by Connect",
             ),
             pytest.param(
                 {
                     "pre_connected_flag": True,
-                    "first_connect_op": pipeline_ops_base.ReconnectOperation,
+                    "first_connection_op": pipeline_ops_base.ReconnectOperation,
                     "mid_connect_flag": True,
-                    "second_connect_op": pipeline_ops_base.ConnectOperation,
+                    "second_connection_op": pipeline_ops_base.ConnectOperation,
                 },
                 id="Reconnect followed by Connect",
             ),
@@ -516,24 +526,24 @@ class TestSerializeConnectOpStageRunOp(object):
         "Immediately completes a second op which was waiting for a first op that succeeded"
     )
     def test_immediately_completes_second_op(self, stage, params, mocker):
-        first_connect_op = params["first_connect_op"](mocker.MagicMock())
-        second_connect_op = params["second_connect_op"](mocker.MagicMock())
+        first_connection_op = params["first_connection_op"](mocker.MagicMock())
+        second_connection_op = params["second_connection_op"](mocker.MagicMock())
         stage.pipeline_root.connected = params["pre_connected_flag"]
 
-        stage.run_op(first_connect_op)
-        stage.run_op(second_connect_op)
+        stage.run_op(first_connection_op)
+        stage.run_op(second_connection_op)
 
-        # first_connect_op has been passed down.  second_connect_op is waiting for first disconnect to complete.
+        # first_connection_op has been passed down.  second_connection_op is waiting for first disconnect to complete.
         assert stage.next.run_op.call_count == 1
-        assert stage.next.run_op.call_args[0][0] == first_connect_op
+        assert stage.next.run_op.call_args[0][0] == first_connection_op
 
-        # complete first_connect_op
+        # complete first_connection_op
         stage.pipeline_root.connected = params["mid_connect_flag"]
-        operation_flow.complete_op(stage=stage.next, op=first_connect_op)
+        operation_flow.complete_op(stage=stage.next, op=first_connection_op)
 
         # second connect_op should be completed without having been passed down.
         assert stage.next.run_op.call_count == 1
-        assert_callback_succeeded(op=second_connect_op)
+        assert_callback_succeeded(op=second_connection_op)
 
 
 pipeline_stage_test.add_base_pipeline_stage_tests(
