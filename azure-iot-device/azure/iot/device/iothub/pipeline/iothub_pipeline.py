@@ -211,7 +211,7 @@ class IoTHubPipeline(object):
             if op.error:
                 callback(error=op.errror, twin=None)
             else:
-                callback(twin=call.twin)
+                callback(twin=op.twin)
 
         self._pipeline.run_op(pipeline_ops_iothub.GetTwinOperation(callback=on_complete))
 
