@@ -552,9 +552,7 @@ class SharedClientGetTwinTests(WaitsForEventCompletion):
         assert iothub_pipeline.enable_feature.call_count == 0
 
     @pytest.mark.it("Begins a 'get_twin' pipeline operation")
-    def test_get_twin_calls_pipeline(
-        self, client, iothub_pipeline
-    ):
+    def test_get_twin_calls_pipeline(self, client, iothub_pipeline):
         client.get_twin()
         assert iothub_pipeline.get_twin.call_count == 1
 

@@ -260,7 +260,7 @@ class TestIoTHubPipelineDisconnect(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the DisconnectOperation")
     def test_op_fail(self, mocker, pipeline):
-        pipeline.disconnect(callback=MagicMock())
+        pipeline.disconnect(callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
 
@@ -311,7 +311,7 @@ class TestIoTHubPipelineSendD2CMessage(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the SendD2CMessageOperation")
     def test_op_fail(self, mocker, pipeline, message):
-        pipeline.send_d2c_message(message,callback=mocker.MagicMock())
+        pipeline.send_d2c_message(message, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
 
