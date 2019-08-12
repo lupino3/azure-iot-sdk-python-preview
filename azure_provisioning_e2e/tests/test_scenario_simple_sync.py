@@ -149,13 +149,13 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
     #     device_cert_content = device_pem.read()
 
     with open("device_cert.pem", "w") as out_device_cert:
-        # device_cert_content = os.getenv("PROVISIONING_DEVICE_CERT_1")
-        device_cert_content = "all file write"
+        device_cert_content = os.getenv("PROVISIONING_DEVICE_CERT_1")
+        # device_cert_content = "all file write"
         out_device_cert.writelines(device_cert_content)
 
     with open("device_key.pem", "w") as out_device_key:
-        # device_key_content = os.getenv("PROVISIONING_DEVICE_KEY_1")
-        device_key_content = "all key write"
+        device_key_content = os.getenv("PROVISIONING_DEVICE_KEY_1")
+        # device_key_content = "all key write"
         out_device_key.writelines(device_key_content)
 
     attestation_mechanism = AttestationMechanism.create_with_x509_client_certs(device_cert_content)
