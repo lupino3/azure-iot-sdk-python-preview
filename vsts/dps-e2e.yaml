@@ -38,6 +38,17 @@ jobs:
   - script: 'echo $(openssl version)'
     displayName: 'Check openssl version'
 
+  - script: 'echo $(Build.SourcesDirectory)'
+    displayName: 'What is build source directory'
+
+  - script: 'echo $(Agent.WorkFolder)'
+    displayName: 'What is agent work directory'
+
+  - script: |
+      cd $(Agent.WorkFolder)
+      touch .rnd
+    displayName: 'create random number generator file due to openssl issues'
+
   - script: |
       cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
       pytest test_scenario_simple_sync.py --junitxml=junit/test-results.xml
