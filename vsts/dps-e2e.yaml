@@ -46,6 +46,7 @@ jobs:
 
   - script: |
       cd $(Agent.WorkFolder)
+      cd ..
       touch .rnd
     displayName: 'create random number generator file due to openssl issues'
 
