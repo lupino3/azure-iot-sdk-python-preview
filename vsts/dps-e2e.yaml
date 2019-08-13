@@ -35,6 +35,9 @@ jobs:
   - script: 'python -m pip install -U -r requirements_test.txt'
     displayName: 'Install provisioning service SDK and pytest'
 
+  - script: 'openssl version'
+    displayName: 'Check openssl version'
+
   - script: |
       cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
       pytest test_scenario_simple_sync.py --junitxml=junit/test-results.xml
