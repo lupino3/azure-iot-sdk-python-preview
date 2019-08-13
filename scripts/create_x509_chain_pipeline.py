@@ -293,12 +293,13 @@ def create_leaf_certificates(
 def call_intermediate_cert_creation_from_pipeline(
     common_name, intermediate_password, key_size=4096, days=30
 ):
-    logging.basicConfig(filename="certcreate.log", level=logging.DEBUG)
+    # logging.basicConfig(filename="certcreate.log", level=logging.DEBUG)
 
     os.system("mkdir demoCA")
     create_directories()
 
-    create_custom_config()
+    shutil.copy("config/openssl.cnf", "demoCA/openssl.cnf")
+    # create_custom_config()
 
     ca_password = os.getenv("PROVISIONING_ROOT_PASSWORD")
 
