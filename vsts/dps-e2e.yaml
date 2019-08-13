@@ -35,8 +35,13 @@ jobs:
   - script: 'python -m pip install -U -r requirements_test.txt'
     displayName: 'Install provisioning service SDK and pytest'
 
-  - script: 'pytest $(Build.SourcesDirectory)/azure_provisioning_e2e/tests/test_scenario_simple_sync.py --junitxml=junit/test-results.xml'
+  - script: |
+      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+      pytest test_scenario_simple_sync.py --junitxml=junit/test-results.xml
     displayName: 'Run Specified E2E Test with env variables'
+
+#  - script: 'pytest $(Build.SourcesDirectory)/azure_provisioning_e2e/tests/test_scenario_simple_sync.py --junitxml=junit/test-results.xml'
+#    displayName: 'Run Specified E2E Test with env variables'
 
 #  - script: echo hello world
 #    displayName: 'see if it works'
