@@ -12,10 +12,10 @@ jobs:
 #          python.version: '2.7'
 #        Python34:
 #          python.version: '3.4'
-        Python35:
-          python.version: '3.5'
-        Python36:
-          python.version: '3.6'
+#        Python35:
+#          python.version: '3.5'
+#        Python36:
+#          python.version: '3.6'
         Python37:
           python.version: '3.7'
       maxParallel: 1
@@ -35,7 +35,7 @@ jobs:
   - script: 'python -m pip install -U -r requirements_test.txt'
     displayName: 'Install provisioning service SDK and pytest'
 
-  - script: 'openssl version'
+  - script: 'echo $(openssl version)'
     displayName: 'Check openssl version'
 
   - script: |
