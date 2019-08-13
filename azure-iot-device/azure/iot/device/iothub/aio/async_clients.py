@@ -21,6 +21,7 @@ from .async_inbox import AsyncClientInbox
 
 logger = logging.getLogger(__name__)
 
+# BKTODO: test exception cases for all APIs
 
 class GenericIoTHubClient(AbstractIoTHubClient):
     """A super class representing a generic asynchronous client.

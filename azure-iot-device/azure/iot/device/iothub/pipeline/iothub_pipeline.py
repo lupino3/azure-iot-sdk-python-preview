@@ -23,6 +23,9 @@ from azure.iot.device.iothub.auth.x509_authentication_provider import X509Authen
 
 logger = logging.getLogger(__name__)
 
+# BKTODO: test error cases for all APIs
+# BKTODO: test initializer doesn't return until OPS are done
+# BKTODO: test initialize raises if ops raise
 
 class IoTHubPipeline(object):
     def __init__(self, auth_provider):
@@ -103,6 +106,7 @@ class IoTHubPipeline(object):
                 auth_provider=auth_provider, callback=callback
             )
         else:  # Currently everything else goes via this block.
+            # BKTODO: does SetX509AuthProviderOperation even get used?  Then why is it here?
             op = pipeline_ops_iothub.SetAuthProviderOperation(
                 auth_provider=auth_provider, callback=callback
             )

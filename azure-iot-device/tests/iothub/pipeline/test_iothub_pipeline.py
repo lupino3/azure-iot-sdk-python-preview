@@ -137,7 +137,7 @@ class TestIoTHubPipelineInstantiation(object):
         "Propagates exceptions that occurred in execution upon unsuccessful completion of the SetAuthProviderOperation"
     )
     def _test_sas_auth_op_fail(self, mocker, device_connection_string):
-        # TODO
+        # BKTODO
         mocker.spy(pipeline_stages_base.PipelineRootStage, "run_op")
         auth_provider = SymmetricKeyAuthenticationProvider.parse(device_connection_string)
         pipeline = IoTHubPipeline(auth_provider)
@@ -165,7 +165,7 @@ class TestIoTHubPipelineInstantiation(object):
         "Propagates exceptions that occurred in execution upon unsuccessful completion of the SetX509AuthProviderOperation"
     )
     def _test_cert_auth_op_fail(self, mocker, x509):
-        # TODO
+        # BKTODO.  Maybe this gets removed
         mocker.spy(pipeline_stages_base.PipelineRootStage, "run_op")
         auth_provider = X509AuthenticationProvider(
             hostname="somehostname", device_id="somedevice", x509=x509
@@ -208,29 +208,13 @@ class TestIoTHubPipelineConnect(object):
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the ConnectOperation")
     def _test_op_fail(self, mocker, pipeline):
         assert False
-        # TODO
+        # BKTODO
         pipeline.connect()
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
 
         with pytest.raises(SystemExit):
             op.callback(op)
-
-    @pytest.mark.it(
-        "Does not trigger callback upon unsuccessful completion of the ConnectOperation"
-    )
-    def _test_op_fail_no_callback(self, mocker, pipeline):
-        # TODO
-        cb = mocker.MagicMock()
-        pipeline.connect(callback=cb)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.error = Exception()
-
-        with pytest.raises(SystemExit):
-            op.callback(op)
-
-        assert cb.call_count == 0
-
 
 @pytest.mark.describe("IoTHubPipeline - .disconnect()")
 class TestIoTHubPipelineDisconnect(object):
@@ -245,6 +229,7 @@ class TestIoTHubPipelineDisconnect(object):
     @pytest.mark.it(
         "Triggers an optionally provided callback upon successful completion of the DisconnectOperation"
     )
+    # BKTODO: greap for "optionally provided calllback"
     def test_op_success_with_callback(self, mocker, pipeline):
         cb = mocker.MagicMock()
 
@@ -260,26 +245,13 @@ class TestIoTHubPipelineDisconnect(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the DisconnectOperation")
     def test_op_fail(self, mocker, pipeline):
+        # BKTODO - why doesn't this test fail.  It should fail.  It should also be replaced
         pipeline.disconnect(callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
 
         with pytest.raises(SystemExit):
             op.callback(op)
-
-    @pytest.mark.it(
-        "Does not trigger callback upon unsuccessful completion of the DisconnectOperation"
-    )
-    def test_op_fail_no_callback(self, mocker, pipeline):
-        cb = mocker.MagicMock()
-        pipeline.disconnect(callback=cb)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.error = Exception()
-
-        with pytest.raises(SystemExit):
-            op.callback(op)
-
-        assert cb.call_count == 0
 
 
 @pytest.mark.describe("IoTHubPipeline - .send_d2c_message()")
@@ -311,6 +283,7 @@ class TestIoTHubPipelineSendD2CMessage(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the SendD2CMessageOperation")
     def test_op_fail(self, mocker, pipeline, message):
+        # BKTODO: shouldn't pass, needs to be replaced
         pipeline.send_d2c_message(message, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
@@ -318,21 +291,7 @@ class TestIoTHubPipelineSendD2CMessage(object):
         with pytest.raises(SystemExit):
             op.callback(op)
 
-    @pytest.mark.it(
-        "Does not trigger callback upon unsuccessful completion of the SendD2CMessageOperation"
-    )
-    def test_op_fail_no_callback(self, mocker, pipeline, message):
-        cb = mocker.MagicMock()
-        pipeline.send_d2c_message(message, callback=cb)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.error = Exception()
-
-        with pytest.raises(SystemExit):
-            op.callback(op)
-
-        assert cb.call_count == 0
-
-
+# BKTODO: all of these tests need to test cb.call_count for success and failure cases both
 @pytest.mark.describe("IoTHubPipeline - .send_output_event()")
 class TestIoTHubPipelineSendOutputEvent(object):
     @pytest.fixture
@@ -368,6 +327,7 @@ class TestIoTHubPipelineSendOutputEvent(object):
 
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the SendOutputEventOperation")
     def test_op_fail(self, mocker, pipeline, message):
+        # BKTODO: shouldn't pass. needs to be replaced
         pipeline.send_output_event(message)
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
@@ -423,6 +383,7 @@ class TestIoTHubPipelineSendMethodResponse(object):
         "Raise SystemExit upon unsuccessful completion of the SendMethodResponseOperation"
     )
     def test_op_fail(self, mocker, pipeline, method_response):
+        # BKTODO: shouldn't pass, needs to be replaced
         pipeline.send_method_response(method_response, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
@@ -526,20 +487,12 @@ class TestIoTHubPipelinePatchTwinReportedProperties(object):
 
         assert cb.call_count == 1
 
-    @pytest.mark.it(
-        "Does nothing upon successful completion of the PatchTwinReportedPropertiesOperation if no callback is provided"
-    )
-    def _test_op_success_no_callback(self, pipeline, twin_patch):
-        pipeline.patch_twin_reported_properties(twin_patch)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.callback(op)
-
-        # No assertions required - if the code executes without error, the test passes
-
+# BKTODO: grep for _test to make sure I'm not leaving any tests disabled
     @pytest.mark.it(
         "Raise SystemExit upon unsuccessful completion of the PatchTwinReportedPropertiesOperation"
     )
     def test_op_fail(self, mocker, pipeline, twin_patch):
+        # BKTODO: shouldn't pass, needs to be replaced
         pipeline.patch_twin_reported_properties(twin_patch, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
@@ -547,21 +500,7 @@ class TestIoTHubPipelinePatchTwinReportedProperties(object):
         with pytest.raises(SystemExit):
             op.callback(op)
 
-    @pytest.mark.it(
-        "Does not trigger callback upon unsuccessful completion of the PatchTwinReportedPropertiesOperation"
-    )
-    def test_op_fail_no_callback(self, mocker, pipeline, twin_patch):
-        cb = mocker.MagicMock()
-        pipeline.patch_twin_reported_properties(twin_patch, callback=cb)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.error = Exception()
-
-        with pytest.raises(SystemExit):
-            op.callback(op)
-
-        assert cb.call_count == 0
-
-
+# BKTODO: grep for SystemExit.  nothing in here should deal with SystemExit()
 @pytest.mark.describe("IoTHubPipeline - .enable_feature()")
 class TestIoTHubPipelineEnableFeature(object):
     @pytest.mark.it("Marks the feature as enabled")
@@ -611,6 +550,7 @@ class TestIoTHubPipelineEnableFeature(object):
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the EnableFeatureOperation")
     @pytest.mark.parametrize("feature", all_features)
     def test_op_fail(self, mocker, pipeline, feature):
+        # BKTODO: shouldn't pass, needs to be replaced
         pipeline.enable_feature(feature, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
@@ -685,27 +625,13 @@ class TestIoTHubPipelineDisableFeature(object):
     @pytest.mark.it("Raise SystemExit upon unsuccessful completion of the DisableFeatureOperation")
     @pytest.mark.parametrize("feature", all_features)
     def _test_op_fail(self, mocker, pipeline, feature):
+        # BKTODO: shouldn't pass, needs to be replaced
         pipeline.disable_feature(feature, callback=mocker.MagicMock())
         op = pipeline._pipeline.run_op.call_args[0][0]
         op.error = Exception()
 
         with pytest.raises(SystemExit):
             op.callback(op)
-
-    @pytest.mark.it(
-        "Does not trigger callback upon unsuccessful completion of the DisableFeatureOperation"
-    )
-    @pytest.mark.parametrize("feature", all_features)
-    def _test_op_fail_no_callback(self, mocker, pipeline, feature):
-        cb = mocker.MagicMock()
-        pipeline.disable_feature(feature, callback=cb)
-        op = pipeline._pipeline.run_op.call_args[0][0]
-        op.error = Exception()
-
-        with pytest.raises(SystemExit):
-            op.callback(op)
-
-        assert cb.call_count == 0
 
 
 @pytest.mark.describe("IoTHubPipeline - EVENT: Connected")

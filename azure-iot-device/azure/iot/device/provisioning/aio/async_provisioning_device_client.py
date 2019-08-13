@@ -19,6 +19,7 @@ from azure.iot.device.provisioning.internal.polling_machine import PollingMachin
 
 logger = logging.getLogger(__name__)
 
+# TODO: failure cases for all APIs
 
 class ProvisioningDeviceClient(AbstractProvisioningDeviceClient):
     """

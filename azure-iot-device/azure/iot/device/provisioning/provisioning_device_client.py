@@ -14,6 +14,7 @@ from .internal.polling_machine import PollingMachine
 
 logger = logging.getLogger(__name__)
 
+# BKTODO: error cases for all APIs
 
 class ProvisioningDeviceClient(AbstractProvisioningDeviceClient):
     """

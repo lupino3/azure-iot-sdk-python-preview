@@ -19,6 +19,8 @@ from .sync_inbox import SyncClientInbox
 from .pipeline import constant
 from azure.iot.device.common.evented_callback import EventedCallback
 
+# TODO: test error cases for all APIS
+
 logger = logging.getLogger(__name__)
 
 

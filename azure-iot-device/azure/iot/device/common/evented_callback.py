@@ -9,6 +9,14 @@ import six
 
 logger = logging.getLogger(__name__)
 
+# BKTODO: test exception is raised when error set
+# BKTODO: test None is returned with no error and no return_arg_name
+# BKTODO: test exception when return_arg_name is not a string
+# BKTODO: test exception if return_arg_name is not passed
+# BKTODO: test return arg is returned in valid cases
+# BKTODO: success/failure test (), (error=0), (error=Exception), (foo=10, error=None), (foo=10, error=Exception), (foo=10)
+# BKTODO: failure with these combinations, but return_arg_name doesn't match
+# BKTODO: copy other tests from async callback
 
 class EventedCallback(object):
     """

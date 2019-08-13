@@ -63,6 +63,7 @@ class TestEmulateAsync(object):
         assert result == "foo"
 
 
+# BKTODO: fix this
 @pytest.mark.describe("AwaitableCallback")
 class FixTestAwaitableCallback(object):
     @pytest.mark.it("Instantiates from a provided callback function")
