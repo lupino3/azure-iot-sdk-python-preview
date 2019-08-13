@@ -163,10 +163,20 @@ def create_intermediate(
             cert = str(base64.b64decode(ca_cert), "ascii")
             # print(cert)
             out_ca_pem.write(cert)
+
+            if os.path.exists(in_cert_file_path):
+                print("root cert decoded and created")
+            else:
+                print("root cert NOT decoded and created")
         with open(in_key_file_path, "w") as out_ca_key:
             key = str(base64.b64decode(ca_key), "ascii")
             # print(key)
             out_ca_key.write(key)
+
+            if os.path.exists(in_key_file_path):
+                print("root key decoded and created")
+            else:
+                print("root key NOT decoded and created")
     else:
         in_cert_file_path = "demoCA/newcerts/ca_cert.pem"
         in_key_file_path = "demoCA/private/ca_key.pem"
@@ -177,7 +187,11 @@ def create_intermediate(
         + " "
         + str(key_size)
     )
-    print("Done generating intermediate key")
+    if os.path.exists("demoCA/private/intermediate_key.pem"):
+        print("Done generating intermediate key")
+    else:
+        print("intermediate key NOT generated")
+
     subject = "//C=US/CN=" + common_name
     os.system(
         "openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:"
@@ -187,7 +201,11 @@ def create_intermediate(
         + subject
     )
 
-    print("Done generating intermediate CSR")
+    if os.path.exists("demoCA/private/intermediate_csr.pem"):
+        print("Done generating intermediate CSR")
+    else:
+        print("intermediate csr NOT generated")
+
     os.system(
         "openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile "
         + in_key_file_path
@@ -200,7 +218,10 @@ def create_intermediate(
         + str(days)
         + " -notext -md sha256 -batch"
     )
-    print("Done generating intermediate certificate")
+    if os.path.exists("demoCA/private/intermediate_cert.pem"):
+        print("Done generating intermediate certificate")
+    else:
+        print("intermediate cert NOT generated")
 
 
 def create_certificate_chain(
@@ -261,7 +282,11 @@ def create_leaf_certificates(
         + " "
         + str(key_size)
     )
-    print("Done generating device key")
+    if os.path.exists("demoCA/private/" + key_file_name):
+        print("Done generating device key")
+    else:
+        print("device key NOT generated")
+
     subject = "//C=US/CN=" + common_name_for_all_device + str(index)
     os.system(
         "openssl req -config demoCA/openssl.cnf -new -sha256 -key demoCA/private/"
@@ -274,7 +299,11 @@ def create_leaf_certificates(
         + " -subj "
         + subject
     )
-    print("Done generating device CSR")
+    if os.path.exists("demoCA/private/" + csr_file_name):
+        print("Done generating device CSR")
+    else:
+        print("device CSR NOT generated")
+
     os.system(
         "openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/"
         + csr_file_name
@@ -287,7 +316,11 @@ def create_leaf_certificates(
         + str(days)
         + " -notext -md sha256 -batch"
     )
-    print("Done generating device certificate")
+
+    if os.path.exists("demoCA/private/" + cert_file_name):
+        print("Done generating device cert")
+    else:
+        print("device cert NOT generated")
 
 
 def call_intermediate_cert_creation_from_pipeline(
