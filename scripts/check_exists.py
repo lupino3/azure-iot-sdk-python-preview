@@ -2,14 +2,14 @@ import os
 
 
 def is_root_key_there():
-    if os.path.exists("out_ca_key.pem"):
+    if os.path.exists("ca_key.pem"):
         print("root key present")
     else:
         print("intermediate key absent")
 
 
 def is_root_cert_there():
-    if os.path.exists("out_ca_cert.pem"):
+    if os.path.exists("ca_cert.pem"):
         print("root cert present")
     else:
         print("root cert absent")
