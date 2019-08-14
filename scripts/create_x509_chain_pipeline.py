@@ -334,7 +334,14 @@ def call_intermediate_cert_creation_from_pipeline(
     shutil.copy("config/openssl.cnf", "demoCA/openssl.cnf")
     # create_custom_config()
 
+    if os.path.exists("demoCA/openssl.cnf"):
+        print("Configuration file have been copied")
+    else:
+        print("Configuration file have NOT been copied")
+
     ca_password = os.getenv("PROVISIONING_ROOT_PASSWORD")
+    print(ca_password)
+    print(intermediate_password)
 
     create_intermediate(
         common_name=common_name,
