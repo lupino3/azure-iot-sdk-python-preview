@@ -164,72 +164,65 @@ def before_test(request):
     "A device with a X509 authentication individual enrollment is registered to IoTHub with an user supplied custom device id"
 )
 def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_module):
-    # call_intermediate_cert_creation_from_pipeline(
-    #     common_name=intermediate_common_name, intermediate_password=intermediate_password
+    print("check cert creation")
+    pass
+
+    # registration_id = device_common_name + str(1)
+    # device_id = "e2edpsflyingfeather"
+    # reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
+    #
+    # device_cert_input_file = "demoCA/newcerts/device_cert1.pem"
+    # with open(device_cert_input_file, "r") as in_device_cert:
+    #     device_cert_content = in_device_cert.read()
+    #
+    # attestation_mechanism = AttestationMechanism.create_with_x509_client_certs(device_cert_content)
+    #
+    # individual_provisioning_model = IndividualEnrollment.create(
+    #     attestation=attestation_mechanism,
+    #     registration_id=registration_id,
+    #     device_id=device_id,
+    #     reprovision_policy=reprovision_policy,
     # )
-    # call_device_cert_creation_from_pipeline(
-    #     common_name=device_common_name,
-    #     intermediate_password=intermediate_password,
-    #     device_password=device_password,
+    #
+    # service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
+    # individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
+    #
+    # # time.sleep(3)
+    #
+    # registration_id = individual_enrollment_record.registration_id
+    #
+    # # intermediate_cert_filename = "demoCA/newcerts/intermediate_cert.pem"
+    # # device_chain_cert_output_file = "demoCA/newcerts/device_cert1_chain.pem"
+    # # filenames = [device_cert_input_file, intermediate_cert_filename]
+    # # with open(device_chain_cert_output_file, "w") as outfile:
+    # #             for fname in filenames:
+    # #                 with open(fname) as infile:
+    # #                     outfile.write(infile.read())
+    #
+    # x509 = X509(
+    #     cert_file=device_cert_input_file,
+    #     key_file="demoCA/private/device_key1.pem",
+    #     pass_phrase=device_password,
     # )
+    #
+    # provisioning_device_client = ProvisioningDeviceClient.create_from_x509_certificate(
+    #     provisioning_host=PROVISIONING_HOST,
+    #     registration_id=registration_id,
+    #     id_scope=ID_SCOPE,
+    #     x509=x509,
+    # )
+    #
+    # provisioning_device_client.register()
+    #
+    # helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
+    # device = helper.get_device(device_id)
+    #
+    # assert device is not None
+    # assert device.authentication.type == "selfSigned"
+    # assert device.device_id == device_id
+    #
+    # service_client.delete_individual_enrollment_by_param(registration_id)
 
-    registration_id = device_common_name + str(1)
-    device_id = "e2edpsflyingfeather"
-    reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
-
-    device_cert_input_file = "demoCA/newcerts/device_cert1.pem"
-    with open(device_cert_input_file, "r") as in_device_cert:
-        device_cert_content = in_device_cert.read()
-
-    attestation_mechanism = AttestationMechanism.create_with_x509_client_certs(device_cert_content)
-
-    individual_provisioning_model = IndividualEnrollment.create(
-        attestation=attestation_mechanism,
-        registration_id=registration_id,
-        device_id=device_id,
-        reprovision_policy=reprovision_policy,
-    )
-
-    service_client = ProvisioningServiceClient.create_from_connection_string(DPS_SERVICE_CONN_STR)
-    individual_enrollment_record = service_client.create_or_update(individual_provisioning_model)
-
-    # time.sleep(3)
-
-    registration_id = individual_enrollment_record.registration_id
-
-    # intermediate_cert_filename = "demoCA/newcerts/intermediate_cert.pem"
-    # device_chain_cert_output_file = "demoCA/newcerts/device_cert1_chain.pem"
-    # filenames = [device_cert_input_file, intermediate_cert_filename]
-    # with open(device_chain_cert_output_file, "w") as outfile:
-    #             for fname in filenames:
-    #                 with open(fname) as infile:
-    #                     outfile.write(infile.read())
-
-    x509 = X509(
-        cert_file=device_cert_input_file,
-        key_file="demoCA/private/device_key1.pem",
-        pass_phrase=device_password,
-    )
-
-    provisioning_device_client = ProvisioningDeviceClient.create_from_x509_certificate(
-        provisioning_host=PROVISIONING_HOST,
-        registration_id=registration_id,
-        id_scope=ID_SCOPE,
-        x509=x509,
-    )
-
-    provisioning_device_client.register()
-
-    helper = Helper(IOTHUB_REGISTRY_READ_CONN_STR)
-    device = helper.get_device(device_id)
-
-    assert device is not None
-    assert device.authentication.type == "selfSigned"
-    assert device.device_id == device_id
-
-    service_client.delete_individual_enrollment_by_param(registration_id)
-
-    # delete_directories_certs_created_from_pipeline()
 
 
 #
