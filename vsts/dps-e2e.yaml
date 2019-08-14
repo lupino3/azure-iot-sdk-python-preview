@@ -45,6 +45,11 @@ jobs:
     displayName: 'What is agent work directory'
 
   - script: |
+      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+      openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/C=US/CN=e2edpswingardium"
+    displayName: 'What is agent work directory'
+
+  - script: |
       cd $(Agent.WorkFolder)
       cd ..
       touch .rnd

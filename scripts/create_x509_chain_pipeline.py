@@ -192,7 +192,7 @@ def create_intermediate(
     else:
         print("intermediate key NOT generated")
 
-    subject = "//CN=" + common_name
+    subject = "//C=US/CN=" + common_name
     os.system(
         "openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:"
         + intermediate_password
@@ -287,7 +287,7 @@ def create_leaf_certificates(
     else:
         print("device key NOT generated")
 
-    subject = "//CN=" + common_name_for_all_device + str(index)
+    subject = "//C=US/CN=" + common_name_for_all_device + str(index)
     os.system(
         "openssl req -config demoCA/openssl.cnf -new -sha256 -key demoCA/private/"
         + key_file_name
