@@ -1,3 +1,6 @@
+import os
+
+
 def is_intermediate_key_there():
     if os.path.exists("demoCA/private/intermediate_key.pem"):
         print("intermediate key present")
