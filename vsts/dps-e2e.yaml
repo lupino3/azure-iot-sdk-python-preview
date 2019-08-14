@@ -62,6 +62,11 @@ jobs:
       openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/C=US/CN=e2edpswingardium"
     displayName: 'Direct openssl intermediate creation to check'
 
+  - script: |
+      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/scripts
+      python check_exists.py
+    displayName: 'check if intermediates were created'
+
 #  - script: |
 #      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
 #      cp config/openssl.cnf openssl.cnf
