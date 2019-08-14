@@ -57,8 +57,10 @@ jobs:
 #    displayName: 'Direct openssl to check'
 
   - script: |
+      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+      cp config/openssl.cnf openssl.cnf
       openssl req -out geekflare.csr -newkey rsa:2048 -nodes -keyout geekflare.key
-      openssl req -x509 -sha256 -nodes -newkey rsa:2048 -keyout gfselfsigned.key -out gfcert.pem
+      openssl req -x509 -sha256 -nodes -newkey rsa:2048 -keyout gfselfsigned.key -out gfcert.pem -subj "//CN=geek"
     displayName: 'Direct openssl to check'
 
   - script: |
