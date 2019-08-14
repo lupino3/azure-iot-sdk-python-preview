@@ -223,7 +223,7 @@ def create_intermediate(
     # )
 
     os.system("openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile out_ca_key.pem -cert out_ca_cert.pem  -passin pass:1234 -extensions v3_ca -days 30  -notext -md sha256 -batch")
-    if os.path.exists("demoCA/private/intermediate_cert.pem"):
+    if os.path.exists("demoCA/newcerts/intermediate_cert.pem"):
         print("Done generating intermediate certificate")
     else:
         print("intermediate cert NOT generated")
@@ -304,7 +304,7 @@ def create_leaf_certificates(
         + " -subj "
         + subject
     )
-    if os.path.exists("demoCA/private/" + csr_file_name):
+    if os.path.exists("demoCA/newcerts/" + csr_file_name):
         print("Done generating device CSR")
     else:
         print("device CSR NOT generated")
@@ -322,7 +322,7 @@ def create_leaf_certificates(
         + " -notext -md sha256 -batch"
     )
 
-    if os.path.exists("demoCA/private/" + cert_file_name):
+    if os.path.exists("demoCA/newcerts/" + cert_file_name):
         print("Done generating device cert")
     else:
         print("device cert NOT generated")
