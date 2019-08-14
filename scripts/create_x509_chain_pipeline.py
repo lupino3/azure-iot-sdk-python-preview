@@ -209,18 +209,20 @@ def create_intermediate(
     else:
         print("intermediate csr NOT generated")
 
-    os.system(
-        "openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile "
-        + in_key_file_path
-        + " -cert "
-        + in_cert_file_path
-        + " -passin pass:"
-        + ca_password
-        + " "
-        + "-extensions v3_ca -days "
-        + str(days)
-        + " -notext -md sha256 -batch"
-    )
+    # os.system(
+    #     "openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile "
+    #     + in_key_file_path
+    #     + " -cert "
+    #     + in_cert_file_path
+    #     + " -passin pass:"
+    #     + ca_password
+    #     + " "
+    #     + "-extensions v3_ca -days "
+    #     + str(days)
+    #     + " -notext -md sha256 -batch"
+    # )
+
+    os.system("openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile out_ca_key.pem -cert out_ca_cert.pem  -passin pass:1234 -extensions v3_ca -days 30  -notext -md sha256 -batch")
     if os.path.exists("demoCA/private/intermediate_cert.pem"):
         print("Done generating intermediate certificate")
     else:
