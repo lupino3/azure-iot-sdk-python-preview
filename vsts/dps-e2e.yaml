@@ -59,7 +59,7 @@ jobs:
       touch demoCA/index.txt
       echo 1000 > demoCA/serial
       openssl genrsa -aes256 -out demoCA/private/intermediate_key.pem -passout pass:leviosa 4096
-      openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/C=US/CN=e2edpswingardium"
+      openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/CN=e2edpswingardium"
     displayName: 'Direct openssl intermediate creation to check'
 
   - script: |
