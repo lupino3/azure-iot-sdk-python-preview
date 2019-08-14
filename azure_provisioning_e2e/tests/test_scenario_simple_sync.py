@@ -41,18 +41,18 @@ ID_SCOPE = os.getenv("PROVISIONING_DEVICE_IDSCOPE")
 @pytest.fixture(scope="module")
 def before_module(request):
     print("set up before all tests")
-    call_intermediate_cert_creation_from_pipeline(
-        common_name=intermediate_common_name, intermediate_password=intermediate_password
-    )
-    call_device_cert_creation_from_pipeline(
-        common_name=device_common_name,
-        intermediate_password=intermediate_password,
-        device_password=device_password,
-    )
+    # call_intermediate_cert_creation_from_pipeline(
+    #     common_name=intermediate_common_name, intermediate_password=intermediate_password
+    # )
+    # call_device_cert_creation_from_pipeline(
+    #     common_name=device_common_name,
+    #     intermediate_password=intermediate_password,
+    #     device_password=device_password,
+    # )
 
     def after_module():
         print("tear down after all tests")
-        delete_directories_certs_created_from_pipeline()
+        # delete_directories_certs_created_from_pipeline()
 
     request.addfinalizer(after_module)
 
@@ -164,6 +164,14 @@ def before_test(request):
     "A device with a X509 authentication individual enrollment is registered to IoTHub with an user supplied custom device id"
 )
 def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_module):
+    call_intermediate_cert_creation_from_pipeline(
+        common_name=intermediate_common_name, intermediate_password=intermediate_password
+    )
+    call_device_cert_creation_from_pipeline(
+        common_name=device_common_name,
+        intermediate_password=intermediate_password,
+        device_password=device_password,
+    )
 
     registration_id = device_common_name + str(1)
     device_id = "e2edpsflyingfeather"
@@ -220,6 +228,8 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
     assert device.device_id == device_id
 
     service_client.delete_individual_enrollment_by_param(registration_id)
+
+    delete_directories_certs_created_from_pipeline()
 
 
 #
