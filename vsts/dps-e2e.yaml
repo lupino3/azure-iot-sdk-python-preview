@@ -46,6 +46,11 @@ jobs:
 
   - script: |
       cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+      mkdir demoCA
+      mkdir private
+      mkdir newcerts
+      touch demoCA/index.txt
+      echo 1000 > demoCA/serial
       openssl genrsa -aes256 -out demoCA/private/intermediate_key.pem -passout pass:leviosa 4096
       openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/C=US/CN=e2edpswingardium"
     displayName: 'What is agent work directory'
