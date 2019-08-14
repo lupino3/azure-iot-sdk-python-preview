@@ -181,6 +181,7 @@ def create_intermediate(
         in_cert_file_path = "demoCA/newcerts/ca_cert.pem"
         in_key_file_path = "demoCA/private/ca_key.pem"
 
+    # os.system("openssl genrsa -aes256 -out demoCA/private/intermediate_key.pem -passout pass:leviosa 4096")
     os.system(
         "openssl genrsa -aes256 -out demoCA/private/intermediate_key.pem -passout pass:"
         + intermediate_password
@@ -192,16 +193,18 @@ def create_intermediate(
     else:
         print("intermediate key NOT generated")
 
-    subject = "//C=US/CN=" + common_name
-    os.system(
-        "openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:"
-        + intermediate_password
-        + " "
-        + "-new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "
-        + subject
-    )
+    # subject = "//C=US/CN=" + common_name
+    # os.system(
+    #     "openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:"
+    #     + intermediate_password
+    #     + " "
+    #     + "-new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "
+    #     + subject
+    # )
 
-    if os.path.exists("demoCA/private/intermediate_csr.pem"):
+    subject = "/CN=" + "e2edpswingardium"
+    os.system("openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj " + subject)
+    if os.path.exists("demoCA/newcerts/intermediate_csr.pem"):
         print("Done generating intermediate CSR")
     else:
         print("intermediate csr NOT generated")
