@@ -1,6 +1,20 @@
 import os
 
 
+def is_root_key_there():
+    if os.path.exists("out_ca_key.pem"):
+        print("root key present")
+    else:
+        print("intermediate key absent")
+
+
+def is_root_cert_there():
+    if os.path.exists("out_ca_cert.pem"):
+        print("root cert present")
+    else:
+        print("root cert absent")
+
+
 def is_intermediate_key_there():
     if os.path.exists("demoCA/private/intermediate_key.pem"):
         print("intermediate key present")
@@ -23,6 +37,8 @@ def is_intermediate_cert_there():
 
 
 if __name__ == '__main__':
+    is_root_key_there()
+    is_root_cert_there()
     is_intermediate_key_there()
     is_intermediate_csr_there()
     is_intermediate_cert_there()
