@@ -57,15 +57,20 @@ jobs:
 #    displayName: 'Direct openssl to check'
 
   - script: |
+      openssl req -out geekflare.csr -newkey rsa:2048 -nodes -keyout geekflare.key
+      openssl req -x509 -sha256 -nodes -newkey rsa:2048 -keyout gfselfsigned.key -out gfcert.pem
+    displayName: 'Direct openssl to check'
+
+  - script: |
       cd $(Agent.WorkFolder)
       cd ..
       touch .rnd
     displayName: 'create random number generator file due to openssl issues'
 
-  - script: |
-      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
-      pytest test_scenario_simple_sync.py --junitxml=junit/test-results.xml
-    displayName: 'Run Specified E2E Test with env variables'
+#  - script: |
+#      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+#      pytest test_scenario_simple_sync.py --junitxml=junit/test-results.xml
+#    displayName: 'Run Specified E2E Test with env variables'
 
 #  - script: 'pytest $(Build.SourcesDirectory)/azure_provisioning_e2e/tests/test_scenario_simple_sync.py --junitxml=junit/test-results.xml'
 #    displayName: 'Run Specified E2E Test with env variables'
