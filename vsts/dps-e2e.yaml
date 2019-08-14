@@ -64,7 +64,7 @@ jobs:
 
   - script: |
       cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
-      python check_exists.py
+      python $(Build.SourcesDirectory)/scripts/check_exists.py
     displayName: 'check if intermediates were created'
 
 #  - script: |
