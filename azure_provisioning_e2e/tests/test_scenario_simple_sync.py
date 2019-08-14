@@ -186,6 +186,13 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
         print("intermediate cert absent")
         assert False
 
+    if os.path.exists("demoCA/newcerts/device_cert1.pem"):
+        print("device cert present")
+        assert True
+    else:
+        print("device cert absent")
+        assert False
+
     # registration_id = device_common_name + str(1)
     # device_id = "e2edpsflyingfeather"
     # reprovision_policy = ReprovisionPolicy(migrate_device_data=True)
