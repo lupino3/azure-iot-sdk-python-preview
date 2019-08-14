@@ -58,17 +58,17 @@ jobs:
       mkdir demoCA/newcerts
       touch demoCA/index.txt
       echo 1000 > demoCA/serial
-      openssl genrsa -aes256 -out out_ca_key.pem -passout pass:1234 4096
-      openssl req -config demoCA/openssl.cnf -key out_ca_key.pem -passin pass:1234 -new -x509 -days 365  -sha256 -extensions v3_ca -out out_ca_cert.pem -subj "/CN=root"
+      openssl genrsa -aes256 -out ca_key.pem -passout pass:1234 4096
+      openssl req -config demoCA/openssl.cnf -key ca_key.pem -passin pass:1234 -new -x509 -days 365  -sha256 -extensions v3_ca -out ca_cert.pem -subj "/CN=root"
       openssl genrsa -aes256 -out demoCA/private/intermediate_key.pem -passout pass:leviosa 4096
       openssl req -config demoCA/openssl.cnf -key demoCA/private/intermediate_key.pem -passin pass:leviosa -new -sha256 -out demoCA/newcerts/intermediate_csr.pem -subj "/CN=e2edpswingardium"
-      openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile out_ca_key.pem -cert out_ca_cert.pem  -passin pass:1234 -extensions v3_ca -days 30  -notext -md sha256 -batch
+      openssl ca -config demoCA/openssl.cnf -in demoCA/newcerts/intermediate_csr.pem -out demoCA/newcerts/intermediate_cert.pem -keyfile ca_key.pem -cert ca_cert.pem  -passin pass:1234 -extensions v3_ca -days 30  -notext -md sha256 -batch
     displayName: 'Direct openssl intermediate creation to check'
 
-#  - script: |
-#      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
-#      python $(Build.SourcesDirectory)/scripts/check_exists.py
-#    displayName: 'check if intermediates were created'
+  - script: |
+      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
+      python $(Build.SourcesDirectory)/scripts/check_exists.py
+    displayName: 'check if certs were created'
 
 #  - script: |
 #      cd $(Build.SourcesDirectory)/azure_provisioning_e2e/tests
