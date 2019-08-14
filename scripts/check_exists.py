@@ -10,9 +10,9 @@ def is_intermediate_key_there():
 
 def is_intermediate_csr_there():
     if os.path.exists("demoCA/newcerts/intermediate_csr.pem"):
-        print("intermediate cert present")
+        print("intermediate CSR present")
     else:
-        print("intermediate cert absent")
+        print("intermediate CSR absent")
 
 
 def is_intermediate_cert_there():
