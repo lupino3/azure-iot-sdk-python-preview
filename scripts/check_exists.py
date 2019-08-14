@@ -24,5 +24,6 @@ def is_intermediate_cert_there():
 
 if __name__ == '__main__':
     is_intermediate_key_there()
+    is_intermediate_csr_there()
     is_intermediate_cert_there()
 
