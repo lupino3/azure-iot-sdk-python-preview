@@ -167,18 +167,24 @@ def test_device_register_with_device_id_for_a_x509_individual_enrollment(before_
     print("check cert creation")
     if os.path.exists("demoCA/private/intermediate_key.pem"):
         print("intermediate key present")
+        assert True
     else:
         print("intermediate key absent")
+        assert False
 
     if os.path.exists("demoCA/newcerts/intermediate_csr.pem"):
         print("intermediate CSR present")
+        assert True
     else:
         print("intermediate CSR absent")
+        assert False
 
     if os.path.exists("demoCA/newcerts/intermediate_cert.pem"):
         print("intermediate cert present")
+        assert True
     else:
         print("intermediate cert absent")
+        assert False
 
     # registration_id = device_common_name + str(1)
     # device_id = "e2edpsflyingfeather"
